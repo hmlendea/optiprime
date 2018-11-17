@@ -11,7 +11,7 @@ if [ -d "/sys/class/power_supply/BAT0" ]; then
 
     echo "Battery state is '$BATT_STATE'"
 
-    if [ "$BATT_STATE" == "Charging" ] || [ "$BATT_STATE" == "Full" ]; then
+    if [ "$BATT_STATE" == "Charging" ] || [ "$BATT_STATE" == "Full" ] || [ "$BATT_STATE" == "Unknown" ]; then
         GPU_VENDOR="nvidia"
     fi
 fi
