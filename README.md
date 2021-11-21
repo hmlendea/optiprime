@@ -1,1 +1,1 @@
-[![Build Status](https://travis-ci.com/hmlendea/optiprime.svg?branch=master)](https://travis-ci.com/hmlendea/optiprime)
+[![Build Status](https://github.com/hmlendea/optiprime/actions/workflows/bash.yml/badge.svg)](https://github.com/hmlendea/optiprime/actions/workflows/bash.yml)
