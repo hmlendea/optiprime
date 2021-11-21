@@ -3,7 +3,6 @@
 APP_PATH="${1}"
 APP_ARGS="${@:2}"
 
-CHASSIS_TYPE="Desktop"
 GPU_TO_USE="Intel"
 
 # Check that bumblee is installed
@@ -16,8 +15,8 @@ fi
 # Detect battery state
 
 if [ -d "/sys/module/battery" ] \
-&& [ -d "/sys/class/power_supply/BAT0" ]
-&& [ -d "/proc/acpi/button/lid" ] ; then
+&& [ -d "/sys/class/power_supply/BAT0" ] \
+&& [ -d "/proc/acpi/button/lid" ]; then
     BATTERY_STATE=$(cat "/sys/class/power_supply/BAT0/status")
 
     echo "Battery state is '${BATTERY_STATE}'"
