@@ -1,38 +1,55 @@
 #!/bin/sh
 
-APP_PATH="$1"
+APP_PATH="${1}"
 APP_ARGS="${@:2}"
 
-GPU_VENDORS=$(lspci | grep "VGA compatible controller" | awk '{print tolower($5)}')
-GPU_VENDOR="intel"
+GPU_TO_USE="Intel"
 
-if [ -d "/sys/class/power_supply/BAT0" ]; then
-    BATT_STATE=$(cat "/sys/class/power_supply/BAT0/status")
+# Check that bumblee is installed
 
-    echo "Battery state is '$BATT_STATE'"
-
-    if [ "$BATT_STATE" == "Charging" ] || [ "$BATT_STATE" == "Full" ] || [ "$BATT_STATE" == "Unknown" ]; then
-        GPU_VENDOR="nvidia"
-    fi
+if [ ! -f "/usr/bin/bumblebeed" ]; then
+    echo "ERROR: bumblebee is not installed!"
+    exit 1
 fi
 
-echo "Launching the application through the $GPU_VENDOR GPU..."
-echo "Application path: $APP_PATH"
-echo "Application args: $APP_ARGS"
+# Detect battery state
 
-if [ "$GPU_VENDOR" == "intel" ]; then
-    "$APP_PATH" $APP_ARGS
+if [ -d "/sys/module/battery" ] \
+&& [ -d "/sys/class/power_supply/BAT0" ] \
+&& [ -d "/proc/acpi/button/lid" ]; then
+    BATTERY_STATE=$(cat "/sys/class/power_supply/BAT0/status")
 
-    exit
-elif [ "$GPU_VENDOR" == "nvidia" ]; then
+    echo "Battery state is '${BATTERY_STATE}'"
+
+    if [ "${BATTERY_STATE}" = "Charging" ] || [ "${BATTERY_STATE}" = "Full" ] || [ "${BATTERY_STATE}" = "Unknown" ]; then
+        GPU_TO_USE="Nvidia"
+    fi
+else
+    echo "ERROR: No battery detected!"
+    echo "This script only works on laptops."
+
+    exit 2
+fi
+
+# Print info
+
+echo "Launching the application through the ${GPU_TO_USE} GPU..."
+echo " - Application path: ${APP_PATH}"
+echo " - Application args: ${APP_ARGS}"
+
+# Execute bin
+
+if [ "${GPU_TO_USE}" = "Intel" ]; then
+    "${APP_PATH}" ${APP_ARGS}
+elif [ "$GPU_TO_USE" = "Nvidia" ]; then
     COMPRESSION_METHOD="jpeg" # yuv has similar results
 
     export vblank_mode=0
     export VGL_READBACK=pbo
 
-    echo "Framelimit (vblank_mode): $vblank_mode"
-    echo "VGL_READBACK: $VGL_READBACK"
-    echo "Compression method: $COMPRESSION_METHOD"
+    echo "Framelimit (vblank_mode): ${vblank_mode}"
+    echo "VGL_READBACK: ${VGL_READBACK}"
+    echo "Compression method: ${COMPRESSION_METHOD}"
 
-    optirun -c "$COMPRESSION_METHOD" -b primus "$APP_PATH" $APP_ARGS
+    optirun -c "${COMPRESSION_METHOD}" -b primus "${APP_PATH}" ${APP_ARGS}
 fi
