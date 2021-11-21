@@ -18,11 +18,11 @@ fi
 if [ -d "/sys/module/battery" ] \
 && [ -d "/sys/class/power_supply/BAT0" ]
 && [ -d "/proc/acpi/button/lid" ] ; then
-    BATT_STATE=$(cat "/sys/class/power_supply/BAT0/status")
+    BATTERY_STATE=$(cat "/sys/class/power_supply/BAT0/status")
 
-    echo "Battery state is '${BATT_STATE}'"
+    echo "Battery state is '${BATTERY_STATE}'"
 
-    if [ "${BATT_STATE}" = "Charging" ] || [ "${BATT_STATE}" = "Full" ] || [ "${BATT_STATE}" = "Unknown" ]; then
+    if [ "${BATTERY_STATE}" = "Charging" ] || [ "${BATTERY_STATE}" = "Full" ] || [ "${BATTERY_STATE}" = "Unknown" ]; then
         GPU_TO_USE="Nvidia"
     fi
 else
