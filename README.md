@@ -3,3 +3,28 @@
 # About
 
 Bash script to run applications efficiently using the Nvidia GPU on Linux, using bumblebee and optirun.
+
+# Installation
+
+## Arch Linux
+
+Install it using [this PKGBUILD](https://github.com/hmlendea/PKGBUILDs/tree/master/pkg/optiprime).
+
+## Other distros
+
+Copy `optiprime.sh` to `/usr/bin/optiprime` and make it executable:
+```bash
+cp "optiprime.sh" "/usr/bin/optiprime"
+chmod +x "/usr/bin/optiprime"
+```
+
+# Usage
+
+Simply run `optiprime` and send the application you wish to run as an argument.
+
+Example:
+```bash
+optiprime steam
+```
+
+**Note**: You can edit that application's desktop file _(e.g. /usr/share/applications/steam.desktop)_ to use `optiprime` in its `Exec` command, so that clicking its icon on your desktop will launch it using optiprime.
